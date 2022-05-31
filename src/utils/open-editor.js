@@ -54,8 +54,7 @@ function getEditorInfo(files, options = {}) {
 	}
 
 	return {
-		binary: editor.binary,
-    binaryPath: editor.paths[0],
+		binary: editor.paths.length > 0 ? editor.paths[0] : editor.binary,
 		arguments: editorArguments,
 		isTerminalEditor: editor.isTerminalEditor,
 	};
@@ -65,7 +64,7 @@ function openEditor(files, options) {
 	const result = getEditorInfo(files, options);
 	const stdio = result.isTerminalEditor ? 'inherit' : 'ignore';
 
-	const subprocess = execa(result.binaryPath, result.arguments, {
+	const subprocess = execa(result.binary, result.arguments, {
 		detached: true,
 		stdio,
 	});

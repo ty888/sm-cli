@@ -34,7 +34,7 @@ const init = async () => {
   } else {
     
     // 未匹配类型
-    console.log(chalk.red('不理解的操作类型'));
+    console.log(chalk.red('不理解的操作类型！'));
     return
   }
 }

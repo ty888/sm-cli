@@ -24,7 +24,7 @@ const config = {
    * 
    * 拿到局对路径操作：1.cd 到项目根目录 2.pwd
    */
-  __dirname: '/Users/sm2733/Desktop/临时/icon',
+  __dirname: './',
 
   /**
    * 项目默认启动端口号
@@ -40,13 +40,13 @@ const config = {
      * icon 生成位置
      * ⚠️注意：结尾请加上'/'
     */
-    path: '/Users/sm2733/Desktop/临时/icon/',
+    path: './',
 
     /**
      * icon 统一导出路径
      * 若不需导出，请设置为空
     */
-    exportPath: '/Users/sm2733/Desktop/临时/icon/index.js',
+    exportPath: '',
 
     /** 生成扩展名 */
     defaultExtension: '.js',

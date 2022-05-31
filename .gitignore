@@ -17,6 +17,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .npmrc
+.DS_Store
+.vscode
 package-lock.json
 
 /ops

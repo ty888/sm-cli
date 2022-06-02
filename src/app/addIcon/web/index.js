@@ -2,86 +2,103 @@
  * 添加icon脚本
  */
 import fs from 'fs';
+import path from 'path';
+import axios from 'axios'
+import { cp } from 'fs/promises';
 import chalk from 'chalk';
-import { config } from '../../../config/index.js';
 
-const {
-  iconProps
-} = config;
+/** 下载iconfont js文件 */
+const getContent = async (url) => {
+  if (url.startsWith('//')) url = 'https:' + url
+  const response = await axios
+    .get(url)
+    .catch(() => {
+      console.log(chalk.red('❌ faild: iconfont JS文件地址错误或请求失败}'))
+      process.exit(1)
+    })
+  return response.data
+}
+
+/** 验证iconfont地址 */
+const verifyUrl = (url) => {
+  if (!url || /(\.css)$/.test(url) || !url.includes('.js')) {
+    console.log(chalk.red('❌ faild: 请输入正确的iconfont JS地址}}'))
+    return false
+  } else {
+    return true
+  }
+}
 
 /**
- * 错误校验
- * @param fileName 文件名
- * @param iconPath svg路径
- * @returns boolean
+ * 生成 iconfont 文件
+ * @param { string } iconfontPath iconfont 地址
+ * @returns { boolean }
  */
-const verifyUrl = (fileName, iconPath) => {
-  if (!fileName) {
-    console.error(chalk.red('❌ ERROR: 请输入文件名。'));
-    return false;
-  }
+const generateIconFile = async (templatePath, iconfontPath, type) => {
+  const type_ = type === 'create' ? '创建' : '替换';
 
-  if (fileName.length > iconProps.fileNameLength) {
-    console.error(chalk.red(`❌ ERROR: 文件名过长，不得超过${iconProps.fileNameLength}。`));
-    return false;
-  }
+  const targetSrc = templatePath + 'icon/iconfont.js';
 
-  if (!iconPath) {
-    console.error(chalk.red('❌ ERROR: 路径出错了。'));
-    return false;
+  if (!verifyUrl(iconfontPath)) process.exit(1)
+
+  /** 获取js 内容 */
+  const jsContent = await getContent(iconfontPath)
+
+  console.log(chalk.green('🎉 success: 下载iconfont JS成功'))
+  try {
+    // 写入文件
+    fs.writeFileSync(targetSrc, jsContent)
+
+    console.info(chalk.green(`🎉 success: ${type_}iconfont JS成功`))
+  } catch (error) {
+
+    console.log(chalk.red(`❌ faild: ${type_}iconfont JS失败`))
   }
-  return true;
-};
+}
+
 
 /**
- * 创建图标文件
- * @param fileName 文件名
- * @param iconPath svg路径
- * @returns void
+ * 创建模版
+ * @param { string } templatePath 模版生成地址
+ * @param { string } suffix 生成文件后缀
  */
-const createIcon = (fileName, iconPath) => {
-  const _iconPath = iconPath.replace(/<svg.+?>([\s\S]+)<\/svg>/, '$1');
-
-  const _tempData = `export const ${fileName} = (
-  <>
-    ${_iconPath}
-  </>
-);`;
+const generateTemplate = async(templatePath, suffix) => {
+  const sourceSrc = path.resolve(`src/app/addIcon/web/template/index.${suffix}`);
+  const targetSrc = templatePath + 'icon/index.' + suffix;
 
   try {
-    /** 创建icon 文件，写入svg */
-    fs.writeFileSync(iconProps.path + fileName + iconProps.defaultExtension, _tempData);
-
+    await cp(sourceSrc, targetSrc);
+    console.log(chalk.green('🎉 success: 模版创建成功。'));
+    return new Promise((resolve, _) => resolve())
   } catch (error) {
-    console.log(chalk.red('❌ ERROR: 出错了。'));
+    console.log(chalk.red('❌ faild: 模版创建失败。'));
+    process.exit(1)
   }
-
-  /** 设置了exportPath即可导出 */
-  if (iconProps.exportPath) {
-    const _tempImport = `\nexport * from "./paths/${fileName}"`;
-    try {
-      /** 统一出口 导出 */
-      fs.appendFileSync(iconProps.exportPath, _tempImport);
-    } catch (err) {
-      console.log(chalk.red('❌ ERROR: 统一导出出错。'));
-    }
-
-  }
-
-  /** 成功了 */
-  console.log(chalk.green('🎉 Icon 创建成功。点击(Cmd+单击)下方链接访问 ⬇️'));
-  console.log(chalk.blue(iconProps.path + fileName + iconProps.defaultExtension));
-};
+}
 
 /**
- * 统一入口
+ * 入口
  */
-const addWebIcon = (fileName, iconPath) => {
-  /** 校验错误 */
-  if (!verifyUrl(fileName, iconPath)) process.exit(1);
+const addWebIcon = async (config) => {
+  const { path, suffix, iconfontPath } = config
 
-  /** 创建icon */
-  createIcon(fileName, iconPath);
+  /** 检测模版文件是否存在 */
+  if (fs.existsSync(path + 'icon/index.' + suffix)) {
+    
+    /** 生成替换 iconfont.js */
+    generateIconFile(path, iconfontPath, 'edit')
+  } else {
+
+    /**
+     * 模版文件不存在
+     * 
+     * 创建模版文件
+     */
+    await generateTemplate(path, suffix)
+
+    /** 生成创建 iconfont.js */
+    generateIconFile(path, iconfontPath, 'create')
+  }
 };
 
 export { addWebIcon }

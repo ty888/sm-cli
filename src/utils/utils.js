@@ -1,21 +1,23 @@
-import chalk from 'chalk';
-import { config } from '../config/index.js';
 
 /**
- * 根据type 执行函数
- * @param {*} fn1 type 为web时执行的函数
- * @param {*} fn2 type 为android时执行的函数
+ * 根据 type 执行函数
+ * type: web | android
  */
-const runFn = (fn1, fn2) => {
-  return (...params) => {
-    if (config.type === 'web') {
-      fn1(...params);
-    } else if (config.type === 'android') {
-      fn2(...params);
-    } else {
-      console.log(chalk.red('不支持该类型'));
+function runFn(type = 'web') {
+  const fns = {}
+  const self = {
+    when: (type, fn) => {
+      fns[type] = fn
+      return self
+    },
+    run: (...parms) => {
+      if (fns[type]) {
+        return fns[type](...parms)
+      }
+      throw new Error(`没有找到${type}的Fn`)
     }
   }
+  return self
 }
 
 export {

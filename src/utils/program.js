@@ -5,6 +5,7 @@
 import { Command } from 'commander';
 import { runIcon } from '../app/addIcon/index.js'
 import { openEditor } from './index.js'
+import { i18nextParser, i18nextExport, i18nImport, i18nInit } from '../app/i18n/index.js';
 
 const initProgram = () => {
   const program = new Command();
@@ -40,6 +41,20 @@ const initProgram = () => {
      * 其他编辑器可参考 (https://github.com/sindresorhus/env-editor)
      */
     openEditor(['./src/config/index.js'], { editor: 'vscode' });
+  });
+
+  /** 多语言工具 */
+  program.command('i18n')
+  .description('商米大前端工具集 - 多语言工具')
+  .option('-c, --config', '初始化项目配置')
+  .option('-p, --parser', '格式化')
+  .option('-i, --import', '导入')
+  .option('-e, --export', '导出')
+  .action((conf) => {
+    conf?.config && i18nInit();
+    conf?.import && i18nImport();
+    conf?.parser && i18nextParser();
+    conf?.export && i18nextExport();
   });
 
   program.parse(process.argv);

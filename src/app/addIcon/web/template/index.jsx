@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React from 'react'
 require('./iconfont')
 
 const IconFont = (props) => {

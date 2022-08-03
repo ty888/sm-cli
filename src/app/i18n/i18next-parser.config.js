@@ -1,14 +1,16 @@
+import { langs, STRING_NOT_TRANSLATED } from './config.js'
+
 export default {
   defaultNamespace: 'translation',
   defaultValue: (locale, _namespace, key) => {
     if (locale === 'zh') {
       return key
     }
-    return '__STRING_NOT_TRANSLATED__'
+    return STRING_NOT_TRANSLATED
   },
   keepRemoved: true,
   keySeparator: false,
-  locales: ['zh', 'en', 'de', 'fr', 'ja', 'es'],
+  locales: langs,
   namespaceSeparator: false,
   output: 'src/locales/$LOCALE/$NAMESPACE.json',
   input: [

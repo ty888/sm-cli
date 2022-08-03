@@ -11,13 +11,23 @@ import chalk from 'chalk';
 import moment from 'moment';
 import {
   langs,
-  STRING_NOT_TRANSLATED
+  STRING_NOT_TRANSLATED,
+  I18N
 } from './config.js'
 
 const {
   merge,
   sortBy
 } = pkg;
+
+function returnSheetData(i18n, i18nCode) {
+  const _data = {}
+
+  Object.keys(I18N).forEach(code => {
+    _data[I18N[code].name] = i18n[code][i18nCode]
+  })
+  return _data
+}
 
 // 格式化导出 excel 的标题栏
 function getSheetData(i18n) {
@@ -31,14 +41,10 @@ function getSheetData(i18n) {
 
   return i18nCodes.map((i18nCode) => ({
     code: i18nCode,
-    '简体中文': i18n.zh[i18nCode],
-    '英文': i18n.en[i18nCode],
-    '德语': i18n.de[i18nCode],
-    '日语': i18n.ja[i18nCode],
-    '法语': i18n.fr[i18nCode],
-    '西班牙语': i18n.es[i18nCode],
+    ...returnSheetData(i18n, i18nCode)
   }))
 }
+
 
 function exportExcel(sheetData, i18nExportFile) {
   sheetData = sortBy(sheetData, ['code'])

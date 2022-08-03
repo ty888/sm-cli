@@ -1,5 +1,3 @@
-export const langs = ['zh', 'en', 'de', 'fr', 'ja', 'es']
-
 export const STRING_NOT_TRANSLATED = '__STRING_NOT_TRANSLATED__'
 
 export const I18N = {
@@ -28,3 +26,7 @@ export const I18N = {
     name: '西班牙语'
   },
 }
+
+export const langs = Object.keys(I18N)
+
+export const I18N_PACKAGE = ['i18next', 'js-cookie', 'react-i18next', 'i18next-browser-languagedetector']

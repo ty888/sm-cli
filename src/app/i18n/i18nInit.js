@@ -13,20 +13,28 @@ import ora from 'ora';
 import {
   cp
 } from 'fs/promises';
+import fse from 'fs-extra';
 import * as url from 'url';
 import {
-  I18N
+  I18N,
+  langs,
+  I18N_PACKAGE
 } from './config.js'
 import {
   exec
 } from 'child_process'
+import {
+  initI18nConfigJs
+} from './generate/index.js'
 
 const __dirname = url.fileURLToPath(new URL('.',
   import.meta.url));
 
+const _package = I18N_PACKAGE.join(' ')
+
+/** 安装必要包 */
 async function installPackage() {
   return new Promise(async (resolve, reject) => {
-    const ipackage = ['i18next', 'js-cookie', 'react-i18next', 'i18next-browser-languagedetector'];
 
     const answers = await prompts([{
       message: '选一个你喜欢的包管理工具',
@@ -40,46 +48,54 @@ async function installPackage() {
           title: 'npm',
           value: 'npm',
         },
+        {
+          title: '无需下载',
+          value: 'none',
+        }
       ]
     }])
 
-    const useYarn = answers.package === 'yarn'
-
-    const _package = ipackage.join(' ')
-
-    const lqProcess = ora(`正在下载三方包 ${_package}\n`)
-    lqProcess.start()
-
-    exec(`${useYarn ? 'yarn add' : 'npm i'} ${_package}`, function (error) {
-      if (error) {
-        reject(error)
-      }
-      lqProcess.succeed()
-      console.info(chalk.green(`🎉 success: ${_package} 下载成功.`))
+    if (answers.package === 'none') {
       resolve()
-    })
+    } else {
+      const useYarn = answers.package === 'yarn'
+
+      const lqProcess = ora(`正在下载三方包 ${_package}\n`)
+      lqProcess.start()
+
+      exec(`${useYarn ? 'yarn add' : 'npm i'} ${_package}`, function (error) {
+        if (error) {
+          reject(error)
+        }
+        lqProcess.succeed()
+        console.info(chalk.green(`🎉 success: ${_package} 下载成功.`))
+        resolve()
+      })
+    }
+
   })
 
 }
 
+/** 生成配置文件 */
 async function generateConfigureFile() {
-  const answers = await prompts([{
-    type: 'multiselect',
-    message: '选择当前项目需要支持的多语言。',
-    name: 'langs',
-    choices: Object.values(I18N).map(item => {
-      return {
-        title: item.name,
-        value: item.code
-      }
-    })
-  }])
+  // const answers = await prompts([{
+  //   type: 'multiselect',
+  //   message: '选择当前项目需要支持的多语言。',
+  //   name: 'langs',
+  //   choices: Object.values(I18N).map(item => {
+  //     return {
+  //       title: item.name,
+  //       value: item.code
+  //     }
+  //   })
+  // }])
 
   const sourceSrc = path.resolve(__dirname, './template/translation.json');
-  const configSourceSrc = path.resolve(__dirname, './template/i18nConfig.js');
+  // const configSourceSrc = path.resolve(__dirname, './template/i18nConfig.js');
   const configTargetSrc = `src/script/i18nConfig.js`;
 
-  for (const code of answers.langs) {
+  for (const code of langs) {
     try {
       const targetSrc = `src/locales/${code}/translation.json`;
       await cp(sourceSrc, targetSrc);
@@ -91,12 +107,21 @@ async function generateConfigureFile() {
   }
 
   try {
-    await cp(configSourceSrc, configTargetSrc);
+    // 文件不存在则创建文件
+    fse.ensureFileSync(configTargetSrc)
+    fse.writeFileSync(configTargetSrc, initI18nConfigJs(langs))
     console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
   } catch (error) {
-    console.log(chalk.red(`❌ faild: i18配置文件生成失败。`));
-    process.exit(1)
+    console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
   }
+
+  // try {
+  //   await cp(configSourceSrc, configTargetSrc);
+  //   console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+  // } catch (error) {
+  //   console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`));
+  //   process.exit(1)
+  // }
 
 }
 
@@ -104,14 +129,15 @@ async function generateConfigureFile() {
 async function i18nInit() {
   await generateConfigureFile()
 
-  console.log(chalk.bgGreen('即将下载必要三方库。'));
+  console.log(chalk.bgGreen(`即将下载必要三方库。${_package}`));
 
   await installPackage()
 
-  console.log(chalk.green('🎉 success: 恭喜！项目初始化完成。'));
+  console.log(chalk.green('🎉 success: 恭喜！项目初始化完成。\n'));
 
-  console.log(chalk.blue('提示：\n接下来需要将 i18nConfig.js 在项目入口处引入\n import "src/script/i18nConfig.js"'));
+  console.log(chalk.blue('提示：\n接下来需要将 i18nConfig.js 在项目入口处引入\nimport "src/script/i18nConfig.js"'));
 }
+
 
 export {
   i18nInit

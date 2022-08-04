@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { initProgram } from './src/utils/index.js';
 import * as dotenv from 'dotenv'
 

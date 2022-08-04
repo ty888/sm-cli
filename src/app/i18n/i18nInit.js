@@ -91,13 +91,14 @@ async function generateConfigureFile() {
   //   })
   // }])
 
-  const sourceSrc = path.resolve(__dirname, './template/translation.json');
-  // const configSourceSrc = path.resolve(__dirname, './template/i18nConfig.js');
-  const configTargetSrc = `src/script/i18nConfig.js`;
+  const sourceSrc = path.join(__dirname, './template/translation.json');
+  const configTargetSrc = path.resolve('./src/script/i18nConfig.js');
+
+  console.log(__dirname)
 
   for (const code of langs) {
     try {
-      const targetSrc = `src/locales/${code}/translation.json`;
+      const targetSrc = path.resolve(`./src/locales/${code}/translation.json`);
       await cp(sourceSrc, targetSrc);
       console.log(chalk.green(`🎉 success: ${targetSrc} ${I18N[code].name} 生成成功。`));
     } catch (e) {

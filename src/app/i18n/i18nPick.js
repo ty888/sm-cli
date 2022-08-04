@@ -134,7 +134,6 @@ function scan({ types: t }) {
             if(path.node.expression.type === 'TemplateLiteral') {
 
             }
-            console.log(path.node.expression.type.expressions)
           }
       },
 

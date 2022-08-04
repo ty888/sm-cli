@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 const init = async () => {
   dotenv.config()
 
-  // /** 设置程序参数命令 */
+  /** 设置程序参数命令 */
   initProgram();
 }
 

@@ -5,13 +5,13 @@ export const I18N = {
     code: 'zh',
     name: '简体中文',
   },
+  tw: {
+    code: 'tw',
+    name: '繁体中文',
+  },
   en: {
     code: 'en',
     name: '英文',
-  },
-  de: {
-    code: 'de',
-    name: '德语'
   },
   fr: {
     code: 'fr',

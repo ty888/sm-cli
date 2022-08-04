@@ -1,7 +1,7 @@
 {
-  "name": "sm-cli",
+  "name": "sunmi",
   "version": "1.0.0",
-  "description": "Help you develop better.",
+  "description": "商米前端工具集",
   "main": "index.js",
   "type": "module",
   "scripts": {

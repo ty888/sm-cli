@@ -6,7 +6,7 @@ import {
 } from '@babel/core'
 
 const textArr = [];
-const zhCH = new Map();
+const zhCN = new Map();
 
 function i18nPick(path = '.') {
   glob(`${process.cwd()}/src/**/*.{ts,tsx,js,jsx}`, {
@@ -130,11 +130,11 @@ function scan({ types: t }) {
                   detectChinese(path.node.test.value, path, 'text', 'SwitchCase');
               }
           },
-          JSXExpressionContainer(path) {
-            if(path.node.expression.type === 'TemplateLiteral') {
+          // JSXExpressionContainer(path) {
+          //   if(path.node.expression.type === 'TemplateLiteral') {
 
-            }
-          }
+          //   }
+          // }
       },
 
   }
@@ -167,13 +167,13 @@ function report(text, path, type, babelType) {
 
       textArr.push(sourceText);
       // 中文文案已存在
-      if (zhCH.has(zhText)) {
-          const data = zhCH.get(zhText);
+      if (zhCN.has(zhText)) {
+          const data = zhCN.get(zhText);
           data.source.push({type, location});
-          zhCH.set(zhText, data);
+          zhCN.set(zhText, data);
       } else {
           // 中文文案不存在
-          zhCH.set(zhText, {
+          zhCN.set(zhText, {
               id: zhText,
               defaultMessage: zhText,
               source: [{

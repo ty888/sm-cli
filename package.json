@@ -1,6 +1,6 @@
 {
-  "name": "@sunmi/i18n",
-  "version": "1.0.7",
+  "name": "@sm/cli",
+  "version": "1.0.0",
   "description": "商米前端工具集",
   "main": "index.js",
   "type": "module",
@@ -9,8 +9,17 @@
     "start": "node index.js"
   },
   "bin": {
-    "sm-cli": "./index.js"
+    "sm": "./index.js"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "cli",
+    "sunmi",
+    "i18n"
+  ],
   "author": "ty",
   "license": "ISC",
   "dependencies": {

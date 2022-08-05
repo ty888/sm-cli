@@ -9,6 +9,7 @@ import pkg from 'lodash';
 import xlsx from 'xlsx';
 import chalk from 'chalk';
 import moment from 'moment';
+import prompts from 'prompts'
 import {
   langs,
   STRING_NOT_TRANSLATED,
@@ -60,6 +61,17 @@ function exportExcel(sheetData, i18nExportFile) {
 
 // 导出入口逻辑入口
 async function i18nextExport(options) {
+
+  const answers = await prompts([{
+    type: 'select',
+    message: '选择导出模式',
+    name: 'exportModel',
+    choices: [
+      { title: '增量导出', value: 'add', description: '导出本次新增文案' },
+      { title: '全量导出', value: 'all', description: '导出项目中全部文案' },
+    ]
+  }])
+
   const i18n = {}
 
   for (const code of langs) {
@@ -75,7 +87,7 @@ async function i18nextExport(options) {
   let sheetData = getSheetData(i18n)
 
   sheetData = sheetData.filter((data) => {
-    if (options && options.all) {
+    if (answers.exportModel === 'all') {
       return true
     }
 

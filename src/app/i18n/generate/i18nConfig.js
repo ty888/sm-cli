@@ -1,9 +1,8 @@
-const initI18nConfigJs = (langs = ['zh', 'en']) => {
-
+const initI18nConfigJs = (langs) => {
   function gImport() {
     let _i = ''
     langs.forEach(lang => {
-      _i += `import ${lang}Trans from '../locales/${lang}/translation.json'` + '\n'
+      _i += `import ${lang.code}Trans from '../locales/${lang.code}/translation.json'` + '\n'
     })
     return _i
   }
@@ -11,8 +10,10 @@ const initI18nConfigJs = (langs = ['zh', 'en']) => {
   function gLOCAL_TRANS() {
     const _o = {}
     langs.forEach(lang => {
-      _o[lang] = {
-        translation: lang + 'Trans'
+      console.log(lang)
+      const {code, standardCode} = lang
+      _o[`'${standardCode}'`] = {
+        translation: code + 'Trans'
       }
     })
     return JSON.stringify(_o)
@@ -28,10 +29,13 @@ const LOCAL_TRANS = ${gLOCAL_TRANS().replaceAll('"','')}
 export const LNG_KEY = 'smPlatLang'
 
 // 默认使用英文多语言
-const DEFAULT_LNG = 'zh'
+const DEFAULT_LNG = 'zh-CN'
 
 // 本地多语言默认存放文件夹
 const DEFAULT_LOCALE_PATH = '../locales'
+
+// 设置cookies
+Cookies.set(LNG_KEY, DEFAULT_LNG)
 
 // 多语言配置初始化
 i18n

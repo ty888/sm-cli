@@ -18,7 +18,8 @@ import * as url from 'url';
 import {
   I18N,
   langs,
-  I18N_PACKAGE
+  I18N_PACKAGE,
+  standardLangs
 } from './config.js'
 import {
   exec
@@ -94,13 +95,16 @@ async function generateConfigureFile() {
   const sourceSrc = path.join(__dirname, './template/translation.json');
   const configTargetSrc = path.resolve('./src/script/i18nConfig.js');
 
-  console.log(__dirname)
-
   for (const code of langs) {
     try {
       const targetSrc = path.resolve(`./src/locales/${code}/translation.json`);
-      await cp(sourceSrc, targetSrc);
-      console.log(chalk.green(`🎉 success: ${targetSrc} ${I18N[code].name} 生成成功。`));
+      // 文件不存在即创建
+      if(!fse.pathExistsSync(targetSrc)) {
+        await cp(sourceSrc, targetSrc);
+        console.log(chalk.green(`🎉 success: ${targetSrc} ${I18N[code].name} 生成成功。`));
+      } else {
+        console.log(chalk.blue(`🎉 info: ${targetSrc} ${I18N[code].name} 已存在。`));
+      }
     } catch (e) {
       console.log(chalk.red(`❌ faild: ${code} 生成失败。`));
       process.exit(1)
@@ -109,9 +113,13 @@ async function generateConfigureFile() {
 
   try {
     // 文件不存在则创建文件
-    fse.ensureFileSync(configTargetSrc)
-    fse.writeFileSync(configTargetSrc, initI18nConfigJs(langs))
-    console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+    if(!fse.pathExistsSync(configTargetSrc)) {
+      fse.ensureFileSync(configTargetSrc)
+      fse.writeFileSync(configTargetSrc, initI18nConfigJs(standardLangs))
+      console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+    } else {
+      console.log(chalk.blue(`🎉 info: ${configTargetSrc} i18配置文件已存在。`));
+    }
   } catch (error) {
     console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
   }

@@ -80,17 +80,6 @@ async function installPackage() {
 
 /** 生成配置文件 */
 async function generateConfigureFile() {
-  // const answers = await prompts([{
-  //   type: 'multiselect',
-  //   message: '选择当前项目需要支持的多语言。',
-  //   name: 'langs',
-  //   choices: Object.values(I18N).map(item => {
-  //     return {
-  //       title: item.name,
-  //       value: item.code
-  //     }
-  //   })
-  // }])
 
   const sourceSrc = path.join(__dirname, './template/translation.json');
   const configTargetSrc = path.resolve('./src/script/i18nConfig.js');
@@ -123,15 +112,6 @@ async function generateConfigureFile() {
   } catch (error) {
     console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
   }
-
-  // try {
-  //   await cp(configSourceSrc, configTargetSrc);
-  //   console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
-  // } catch (error) {
-  //   console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`));
-  //   process.exit(1)
-  // }
-
 }
 
 

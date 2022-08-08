@@ -1,8 +1,3 @@
-import * as url from 'url';
-
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-
 /**
  * 根据 type 执行函数
  * type: web | android

@@ -17,7 +17,7 @@ const initProgram = () => {
     .option('-e, --export', '导出')
     .option('-p, --parser', '格式化')
     .option('-i, --import', '导入')
-    .option('-s, --scan', '文案扫描')
+    .option('-s, --scan', '文案扫描(开发阶段)')
     .action((conf) => {
       conf?.config && i18nInit();
       conf?.import && i18nImport();

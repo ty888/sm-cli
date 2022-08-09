@@ -1,5 +1,7 @@
 /**
- * 导出本地多语言 - 仅导出修改部分
+ * 导出本地多语言
+ *  - 增量导出
+ *  - 全量导出
  */
 
 import os from 'os';
@@ -55,7 +57,7 @@ function exportExcel(sheetData, i18nExportFile) {
 
   xlsx.utils.book_append_sheet(wb, wx, '导出')
   xlsx.writeFileAsync(i18nExportFile, wb,{}, () => {
-    console.log(chalk.green(`🎉🎉🎉 成功导出到文件：${i18nExportFile}`))
+    console.log(chalk.green(`🎉 成功导出到文件\n ${i18nExportFile}`))
   })
 }
 
@@ -103,7 +105,7 @@ async function i18nextExport(options) {
   })
 
   if (sheetData.length === 0) {
-    console.warn('😂😂😂 暂无数据')
+    console.warn('😂 暂无数据')
     return
   }
 

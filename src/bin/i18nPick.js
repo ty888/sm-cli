@@ -1,3 +1,6 @@
+/**
+ * 扫描分析文案
+ */
 import glob from "glob"
 import fs from "fs"
 import rimraf from "rimraf"
@@ -21,6 +24,8 @@ function i18nPick(path = '.') {
         return;
       }
 
+      console.log(filename)
+
       transformFileSync(filename, {
         presets: [
           ["@babel/preset-typescript", {
@@ -43,7 +48,6 @@ function i18nPick(path = '.') {
           "@babel/preset-react"
         ],
         plugins: [
-          "@babel/plugin-transform-typescript",
           "@babel/plugin-syntax-typescript",
           ["@babel/plugin-proposal-decorators", {
             "legacy": true

@@ -28,6 +28,9 @@ const LOCAL_TRANS = ${gLOCAL_TRANS().replaceAll('"','')}
 // cookie 中使用的多语言键值
 export const LNG_KEY = 'smPlatLang'
 
+// URL lang
+const urlLang = new URL(window.location.href).searchParams.get('lang')
+
 // 默认使用英文多语言
 const DEFAULT_LNG = 'zh-CN'
 
@@ -35,7 +38,10 @@ const DEFAULT_LNG = 'zh-CN'
 const DEFAULT_LOCALE_PATH = '../locales'
 
 // 设置cookies
-Cookies.set(LNG_KEY, DEFAULT_LNG)
+Cookies.set(LNG_KEY, urlLang || DEFAULT_LNG)
+
+// url > cookies > default lang
+export const currentLang =  urlLang || Cookies.get(LNG_KEY) || DEFAULT_LNG
 
 // 多语言配置初始化
 i18n
@@ -62,11 +68,13 @@ i18n
     },
     parseMissingKeyHandler: (key) => {
       // 缺失词条的处理，如果从远端没有获取到对应词条，可以在此做兜底处理
-      const currLng = Cookies.get(LNG_KEY) || DEFAULT_LNG
+      const currLng = currentLang
       const localTrans = LOCAL_TRANS[currLng]?.[key]
       return localTrans || '' // 使用本地对应多语言兜底
     }
   })
+
+window.t = i18n.t
 
 export default i18n  
   `

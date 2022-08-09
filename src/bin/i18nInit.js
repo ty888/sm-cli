@@ -88,7 +88,7 @@ async function generateConfigureFile() {
     try {
       const targetSrc = path.resolve(`./src/locales/${code}/translation.json`);
       // 文件不存在即创建
-      if(!fse.pathExistsSync(targetSrc)) {
+      if (!fse.pathExistsSync(targetSrc)) {
         await cp(sourceSrc, targetSrc);
         console.log(chalk.green(`🎉 success: ${targetSrc} ${I18N[code].name} 生成成功。`));
       } else {
@@ -102,13 +102,10 @@ async function generateConfigureFile() {
 
   try {
     // 文件不存在则创建文件
-    if(!fse.pathExistsSync(configTargetSrc)) {
-      fse.ensureFileSync(configTargetSrc)
-      fse.writeFileSync(configTargetSrc, initI18nConfigJs(standardLangs))
-      console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
-    } else {
-      console.log(chalk.blue(`🎉 info: ${configTargetSrc} i18配置文件已存在。`));
-    }
+    fse.ensureFileSync(configTargetSrc)
+    fse.writeFileSync(configTargetSrc, initI18nConfigJs(standardLangs))
+    console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+
   } catch (error) {
     console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
   }

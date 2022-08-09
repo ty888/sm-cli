@@ -23,7 +23,7 @@ async function writeI18nJson(path, data) {
 async function i18nextSort() {
   for (const code of langs) {
     try {
-      const pathname = path.join(`src/locales/${code}/translation.json`)
+      const pathname = path.join(`./src/i18n/locales/${code}/translation.json`)
       const exists = await fse.pathExists(pathname)
       if(exists) {
         const data = await fse.readJson(pathname)

@@ -12,7 +12,7 @@ export default {
   keySeparator: false,
   locales: langs,
   namespaceSeparator: false,
-  output: 'src/locales/$LOCALE/$NAMESPACE.json',
+  output: 'src/i18n/locales/$LOCALE/$NAMESPACE.json',
   input: [
     `${process.cwd()}/src/**/*.{ts,tsx,js,jsx}`,
   ],

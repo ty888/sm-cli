@@ -1,6 +1,6 @@
 {
   "name": "@sm/i18n",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "商米大前端多语言工具",
   "main": "index.js",
   "type": "module",

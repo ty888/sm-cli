@@ -78,7 +78,7 @@ async function i18nextExport(options) {
 
   for (const code of langs) {
     try {
-      const pathname = path.join(`src/locales/${code}/translation.json`)
+      const pathname = path.join(`src/i18n/locales/${code}/translation.json`)
       const data = await fse.readJson(pathname)
       i18n[code] = data
     } catch (e) {

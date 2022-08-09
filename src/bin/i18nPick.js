@@ -24,8 +24,6 @@ function i18nPick(path = '.') {
         return;
       }
 
-      console.log(filename)
-
       transformFileSync(filename, {
         presets: [
           ["@babel/preset-typescript", {

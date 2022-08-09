@@ -82,11 +82,10 @@ async function installPackage() {
 async function generateConfigureFile() {
 
   const sourceSrc = path.join(__dirname, './template/translation.json');
-  const configTargetSrc = path.resolve('./src/script/i18nConfig.js');
 
   for (const code of langs) {
     try {
-      const targetSrc = path.resolve(`./src/locales/${code}/translation.json`);
+      const targetSrc = path.resolve(`./src/i18n/locales/${code}/translation.json`);
       // 文件不存在即创建
       if (!fse.pathExistsSync(targetSrc)) {
         await cp(sourceSrc, targetSrc);
@@ -101,10 +100,23 @@ async function generateConfigureFile() {
   }
 
   try {
-    // 文件不存在则创建文件
+    const configTargetSrc = path.resolve('./src/i18n/i18nConfig.js');
+    const TsourceSrc = path.join(__dirname, './template/global.d.ts');
+    const TtargetSrc =  path.resolve(`./src/i18n/global.d.ts`);
+
+    // 生成 i18nConfig.js
     fse.ensureFileSync(configTargetSrc)
     fse.writeFileSync(configTargetSrc, initI18nConfigJs(standardLangs))
     console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+
+    // 生成类型文件
+    if (!fse.pathExistsSync(TtargetSrc)) {
+      await cp(TsourceSrc, TtargetSrc);
+      console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+    } else {
+      console.log(chalk.blue(`🎉 info: ${TtargetSrc} 已存在。`));
+    }
+    
 
   } catch (error) {
     console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
@@ -121,7 +133,7 @@ async function i18nInit() {
 
   console.log(chalk.green('🎉 success: 恭喜！项目初始化完成。\n'));
 
-  console.log(chalk.blue('提示：\n接下来需要将 i18nConfig.js 在项目入口处引入\nimport "src/script/i18nConfig.js"'));
+  console.log(chalk.blue('提示：\n接下来需要将 i18nConfig.js 在项目入口处引入\nimport "src/i18n/i18nConfig.js"'));
 }
 
 

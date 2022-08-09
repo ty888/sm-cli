@@ -2,7 +2,7 @@ const initI18nConfigJs = (langs) => {
   function gImport() {
     let _i = ''
     langs.forEach(lang => {
-      _i += `import ${lang.code}Trans from '../locales/${lang.code}/translation.json'` + '\n'
+      _i += `import ${lang.code}Trans from './locales/${lang.code}/translation.json'` + '\n'
     })
     return _i
   }
@@ -10,7 +10,6 @@ const initI18nConfigJs = (langs) => {
   function gLOCAL_TRANS() {
     const _o = {}
     langs.forEach(lang => {
-      console.log(lang)
       const {code, standardCode} = lang
       _o[`'${standardCode}'`] = {
         translation: code + 'Trans'
@@ -28,17 +27,44 @@ const LOCAL_TRANS = ${gLOCAL_TRANS().replaceAll('"','')}
 // cookie 中使用的多语言键值
 export const LNG_KEY = 'smPlatLang'
 
+const getDefaultLocale = () => {
+  const _defaultLang = 'zh-CN'
+  const winLang = window.navigator.language;
+
+  let currentLang = winLang
+  if(winLang) {
+    switch (winLang) {
+      case 'zh':
+        currentLang = 'zh-CN';
+        break;
+      case 'tw':
+        currentLang = 'zh-TW';
+        break;
+      case 'en':
+        currentLang = 'en-US';
+        break;
+      default:
+        break;
+    }
+  }
+  return new Set(Object.keys(LOCAL_TRANS)).has(currentLang) ? currentLang : _defaultLang
+}
+
 // URL lang
 const urlLang = new URL(window.location.href).searchParams.get('lang')
 
-// 默认使用英文多语言
-const DEFAULT_LNG = 'zh-CN'
+// 默认多语言
+const DEFAULT_LNG = getDefaultLocale()
 
 // 本地多语言默认存放文件夹
-const DEFAULT_LOCALE_PATH = '../locales'
+const DEFAULT_LOCALE_PATH = './locales'
 
 // 设置cookies
-Cookies.set(LNG_KEY, urlLang || DEFAULT_LNG)
+if(urlLang) {
+  Cookies.set(LNG_KEY, urlLang)
+} else if (!Cookies.get(LNG_KEY)) {
+  Cookies.set(LNG_KEY, DEFAULT_LNG)
+}
 
 // url > cookies > default lang
 export const currentLang =  urlLang || Cookies.get(LNG_KEY) || DEFAULT_LNG
@@ -74,7 +100,7 @@ i18n
     }
   })
 
-window.t = i18n.t
+window.i18n = i18n
 
 export default i18n  
   `

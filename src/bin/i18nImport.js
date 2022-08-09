@@ -34,7 +34,7 @@ import {
  * 获取代码中对应多语言的地址
  */
 function getI18File(code) {
-  return path.join(`src/locales/${code}/translation.json`)
+  return path.join(`src/i18n/locales/${code}/translation.json`)
 }
 
 /** 函数入口 */

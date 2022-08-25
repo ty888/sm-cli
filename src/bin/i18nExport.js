@@ -11,29 +11,31 @@ import pkg from 'lodash';
 import xlsx from 'xlsx';
 import chalk from 'chalk';
 import moment from 'moment';
-import prompts from 'prompts'
+import prompts from 'prompts';
 import {
   langs,
   STRING_NOT_TRANSLATED,
   I18N
-} from './config.js'
+} from './config.js';
+import {readPackageJson} from '../utils/readFile.js'
+import { checkEnv } from '../utils/utils.js'
 
 const {
   merge,
   sortBy
 } = pkg;
 
-function returnSheetData(i18n, i18nCode) {
+function returnSheetData(i18n, i18nCode, langsData) {
   const _data = {}
 
-  Object.keys(I18N).forEach(code => {
+  langsData.forEach(code => {
     _data[I18N[code].name] = i18n[code][i18nCode]
   })
   return _data
 }
 
 // 格式化导出 excel 的标题栏
-function getSheetData(i18n) {
+function getSheetData(i18n, langsData) {
   const i18nCodes = Array.from(
     new Set(
       Object.values(i18n)
@@ -44,7 +46,7 @@ function getSheetData(i18n) {
 
   return i18nCodes.map((i18nCode) => ({
     code: i18nCode,
-    ...returnSheetData(i18n, i18nCode)
+    ...returnSheetData(i18n, i18nCode, langsData)
   }))
 }
 
@@ -63,6 +65,8 @@ function exportExcel(sheetData, i18nExportFile) {
 
 // 导出入口逻辑入口
 async function i18nextExport(options) {
+  const env = await checkEnv()
+  const langsData = env?.targetLang || langs
 
   const answers = await prompts([{
     type: 'select',
@@ -76,7 +80,7 @@ async function i18nextExport(options) {
 
   const i18n = {}
 
-  for (const code of langs) {
+  for (const code of langsData) {
     try {
       const pathname = path.join(`src/i18n/locales/${code}/translation.json`)
       const data = await fse.readJson(pathname)
@@ -86,7 +90,7 @@ async function i18nextExport(options) {
     }
   }
 
-  let sheetData = getSheetData(i18n)
+  let sheetData = getSheetData(i18n, langsData)
 
   sheetData = sheetData.filter((data) => {
     if (answers.exportModel === 'all') {
@@ -109,7 +113,15 @@ async function i18nextExport(options) {
     return
   }
 
-  const i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${moment(new Date().getTime()).format('YYYY-MM-DD_h:mm')}.xlsx`)
+  let i18nExportFile = '';
+  const data = await readPackageJson()
+  if(data) {
+    i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${data?.name}_${moment(new Date().getTime()).format('YYYY-MM-DD_hh-mm')}.xlsx`)
+  } else {
+    i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${moment(new Date().getTime()).format('YYYY-MM-DD_hh-mm-')}${new Date().getTime()}.xlsx`)
+  }
+
+  readPackageJson
 
   if (!options || !options.merge) {
     try {

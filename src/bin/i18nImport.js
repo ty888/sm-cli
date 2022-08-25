@@ -7,6 +7,7 @@ import fse from 'fs-extra';
 import SortKeys from 'sort-keys';
 import chalk from 'chalk';
 import prompts from 'prompts';
+import { checkEnv } from '../utils/utils.js'
 import {
   langs,
   I18N
@@ -20,12 +21,9 @@ import {
     if (value === '') {
       return '地址不能为空!\n';
     }
-    if (value.indexOf(' ') > -1) {
-      return '地址不允许存在空格!\n';
-    }
-    if (!fse.pathExistsSync(value)) {
-      return console.log('请输入正确的 excel 文件位置\n')
-    }
+    // if (!fse.pathExistsSync(value)) {
+    //   return console.log('请输入正确的 excel 文件位置\n')
+    // }
     return true;
   }
 }
@@ -39,26 +37,27 @@ function getI18File(code) {
 
 /** 函数入口 */
 async function i18nImport() {
+  const env = await checkEnv()
   const {filePath} = await prompts(importSrcPrompts)
+  const langsData = env?.targetLang || langs
 
-  const workbook = xlsx.readFile(filePath)
+  const workbook = xlsx.readFile(filePath.replaceAll('\'', ''))
   const worksheet = workbook.Sheets['导出']
   const sheetData = xlsx.utils.sheet_to_json(worksheet)
   const i18n = {}
   
-  for (const code of langs) {
+  for (const code of langsData) {
     try {
       const pathname = getI18File(code)
       const data = await fse.readJson(pathname)
       i18n[code] = data
-      // console.log(i18n, code, pathname)
     } catch (e) {
       return console.error(e)
     }
   }
 
   sheetData.forEach((item) => {
-    for (const code of langs) {
+    for (const code of langsData) {
       i18n[code][item.code] = item[I18N[code].name]
     }
   })

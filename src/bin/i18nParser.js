@@ -8,6 +8,7 @@ import fse from 'fs-extra'
 import path from 'path'
 import SortKeys from 'sort-keys'
 import * as url from 'url';
+import { checkEnv } from '../utils/utils.js'
 import { langs } from './config.js'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -36,7 +37,9 @@ async function i18nextSort() {
   console.log('🎉🎉🎉 多语言格式化成功')
 }
 
-function i18nextParser() {
+async function i18nextParser() {
+  await checkEnv()
+
   if (!shell.which('i18next')) {
     console.error('❗️❗️❗️首先需要全局安装 i18next-parser 才能执行这个命令')
 

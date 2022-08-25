@@ -28,7 +28,7 @@ const LOCAL_TRANS = ${gLOCAL_TRANS().replaceAll('"','')}
 export const LNG_KEY = 'smPlatLang'
 
 const getDefaultLocale = () => {
-  const _defaultLang = 'zh-CN'
+  const _defaultLang = 'en-US'
   const winLang = window.navigator.language;
 
   let currentLang = winLang
@@ -54,6 +54,7 @@ const getDefaultLocale = () => {
 const urlLang = new URL(window.location.href).searchParams.get('lang')
 
 // 默认多语言
+// 取浏览器本地多语言，若不支持英文兜底
 const DEFAULT_LNG = getDefaultLocale()
 
 // 本地多语言默认存放文件夹

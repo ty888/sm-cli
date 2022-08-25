@@ -19,7 +19,8 @@ import {
   I18N,
   langs,
   I18N_PACKAGE,
-  standardLangs
+  standardLangs,
+  langsMap
 } from './config.js'
 import {
   exec
@@ -27,6 +28,13 @@ import {
 import {
   initI18nConfigJs
 } from './generate/index.js'
+import {
+  checkEnv
+} from '../utils/utils.js'
+import {
+  readConfig
+} from '../utils/readFile.js'
+
 
 const __dirname = url.fileURLToPath(new URL('.',
   import.meta.url));
@@ -80,10 +88,19 @@ async function installPackage() {
 
 /** 生成配置文件 */
 async function generateConfigureFile() {
+  const configData = await readConfig()
+
+  /** 当前选中的语言 */
+  const choicesLangs = configData?.targetLang || langs
+
+  const configJsLang = choicesLangs.map(item => {
+    return standardLangs.find(fitem => fitem.code === item)
+  })
 
   const sourceSrc = path.join(__dirname, './template/translation.json');
 
-  for (const code of langs) {
+  /** 开始生成 locales 文件 */
+  for (const code of choicesLangs) {
     try {
       const targetSrc = path.resolve(`./src/i18n/locales/${code}/translation.json`);
       // 文件不存在即创建
@@ -102,21 +119,66 @@ async function generateConfigureFile() {
   try {
     const configTargetSrc = path.resolve('./src/i18n/i18nConfig.js');
     const TsourceSrc = path.join(__dirname, './template/global.d.ts');
-    const TtargetSrc =  path.resolve(`./src/i18n/global.d.ts`);
+    const TtargetSrc = path.resolve(`./src/i18n/global.d.ts`);
 
     // 生成 i18nConfig.js
     fse.ensureFileSync(configTargetSrc)
-    fse.writeFileSync(configTargetSrc, initI18nConfigJs(standardLangs))
+    fse.writeFileSync(configTargetSrc, initI18nConfigJs(configJsLang))
     console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
 
     // 生成类型文件
     if (!fse.pathExistsSync(TtargetSrc)) {
       await cp(TsourceSrc, TtargetSrc);
-      console.log(chalk.green(`🎉 success: ${configTargetSrc} i18配置文件 生成成功。`));
+      console.log(chalk.green(`🎉 success: ${configTargetSrc} i18核心文件 生成成功。`));
     } else {
       console.log(chalk.blue(`🎉 info: ${TtargetSrc} 已存在。`));
     }
-    
+
+
+  } catch (error) {
+    console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
+  }
+}
+
+async function choicesLangs () {
+  const configData = await readConfig()
+  const langsData = configData?.targetLang || ['zh', 'en']
+  const choices = langsMap.map(item => {
+    return {
+      title: item.name,
+      value: item.code,
+      selected: langsData.findIndex(fitem => fitem === item.code) !== -1
+    }
+  })
+  const answers = await prompts([{
+    type: 'multiselect',
+    name: 'langs',
+    message: '选择项目支持语言',
+    choices: choices,
+    hint: '- Space to select. Return to submit',
+    instructions: `
+    提示：
+    ↑/↓: 选择语言
+    ←/→/[空格]: 切换选中/取消
+    a: 全选/全不选
+    enter/return: 确认提交
+    `
+  }
+  ])
+
+  try {
+    const sourceSrc = path.join(__dirname, './template/config.json');
+    const targetSrc = path.resolve(`./src/i18n/config.json`);
+
+    if (configData) {
+      /** 有config 文件 */
+      fse.writeJsonSync(targetSrc, {...configData, targetLang: answers.langs})
+    } else {
+      /** 无config 文件 */
+      await cp(sourceSrc, targetSrc);
+      fse.writeJsonSync(targetSrc, {...configData, targetLang: answers.langs}, {spaces: 2})
+      console.log(chalk.green(`🎉 success: ${targetSrc} 生成成功。`));
+    }
 
   } catch (error) {
     console.log(chalk.red(`❌ faild: i18n配置文件生成失败。`), error);
@@ -125,6 +187,11 @@ async function generateConfigureFile() {
 
 
 async function i18nInit() {
+  /** 检测环境 */
+  await checkEnv('init')
+
+  await choicesLangs()
+
   await generateConfigureFile()
 
   console.log(chalk.bgGreen(`即将下载必要三方库。${_package}`));

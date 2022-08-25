@@ -39,5 +39,9 @@ export const standardLangs = Object.keys(I18N).map(item => {
   return {code: item, standardCode: I18N[item].standardCode}
 })
 
+export const langsMap = Object.keys(I18N).map(item => {
+  return {code: item, standardCode: I18N[item].standardCode, name: I18N[item].name}
+})
+
 export const I18N_PACKAGE = ['i18next', 'js-cookie', 'react-i18next', 'i18next-browser-languagedetector']
 

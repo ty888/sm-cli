@@ -1,4 +1,9 @@
 import { langs, STRING_NOT_TRANSLATED } from './config.js'
+import {
+  readConfig
+} from '../utils/readFile.js'
+
+const configData = await readConfig()
 
 export default {
   defaultNamespace: 'translation',
@@ -10,7 +15,7 @@ export default {
   },
   keepRemoved: true,
   keySeparator: false,
-  locales: langs,
+  locales: configData?.targetLang || langs,
   namespaceSeparator: false,
   output: 'src/i18n/locales/$LOCALE/$NAMESPACE.json',
   input: [

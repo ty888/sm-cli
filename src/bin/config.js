@@ -45,3 +45,21 @@ export const langsMap = Object.keys(I18N).map(item => {
 
 export const I18N_PACKAGE = ['i18next', 'js-cookie', 'react-i18next', 'i18next-browser-languagedetector']
 
+export const envMap = [
+  {
+    value: 'pro',
+    title: '生成环境',
+    baseURL: 'https://api.sunmi.com/v3/midl/minke'
+  },
+  {
+    value: 'dev',
+    title: '开发环境',
+    baseURL: 'https://api.dev.sunmi.com/v3/midl/minke'
+  },
+  {
+    value: 'test',
+    title: '测试环境',
+    baseURL: 'https://api.test.sunmi.com/v3/midl/minke'
+  },
+]
+

@@ -35,11 +35,7 @@ function getI18File(code) {
   return path.join(`src/i18n/locales/${code}/translation.json`)
 }
 
-/** 函数入口 */
-async function i18nImport() {
-  const env = await checkEnv()
-  const {filePath} = await prompts(importSrcPrompts)
-  const langsData = env?.targetLang || langs
+async function parseExcel(filePath, langsData) {
 
   const workbook = xlsx.readFile(filePath.replaceAll('\'', ''))
   const worksheet = workbook.Sheets['导出']
@@ -71,9 +67,21 @@ async function i18nImport() {
     }
   }
 
-  console.log(chalk.green('🎉🎉🎉 导入成功！'))
+  return true
+}
+
+/** 函数入口 */
+async function i18nImport() {
+  const env = await checkEnv()
+  const {filePath} = await prompts(importSrcPrompts)
+  const langsData = env?.targetLang || langs
+  const res = await parseExcel(filePath, langsData)
+  if(res) {
+    console.log(chalk.green('🎉🎉🎉 导入成功！'))
+  }
 }
 
 export {
-  i18nImport
+  i18nImport,
+  parseExcel
 }

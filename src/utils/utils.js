@@ -52,11 +52,11 @@ const checkEnv = async (type = 'other') => {
     } else {
       /** 有配置文件，返回配置文件内容 */
       const JsonData = await fse.readJson(_configSrc)
-      console.log(chalk.green('🎉 环境检测通过。'));
+      console.log(chalk.green('✅ 环境检测通过。'));
       return JsonData
     }
   }
-  console.log(chalk.green('🎉 环境检测通过。'));
+  console.log(chalk.green('✅ 环境检测通过。'));
   return true
 }
 

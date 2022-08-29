@@ -1,5 +1,6 @@
 /**
  * 初始化项目i18环境
+ * 1.环境检测 -> 读config 配置 -> 配置合并 -> 生成配置文件
  * 1.生成 script/i18nConfig.js i18配置文件
  * 2.根据当前默认支持多语言生成 locales/${code}/translation.json 本地文件
  * 3.项目内安装 i18next js-cookie react-i18next i18next-browser-languagedetector 
@@ -169,14 +170,15 @@ async function choicesLangs () {
   try {
     const sourceSrc = path.join(__dirname, './template/config.json');
     const targetSrc = path.resolve(`./src/i18n/config.json`);
+    const packageObj = fse.readJsonSync(sourceSrc)
 
     if (configData) {
       /** 有config 文件 */
-      fse.writeJsonSync(targetSrc, {...configData, targetLang: answers.langs})
+      fse.writeJsonSync(targetSrc, {...packageObj,...configData, targetLang: answers.langs}, {spaces: 2})
     } else {
       /** 无config 文件 */
       await cp(sourceSrc, targetSrc);
-      fse.writeJsonSync(targetSrc, {...configData, targetLang: answers.langs}, {spaces: 2})
+      fse.writeJsonSync(targetSrc, {...packageObj, ...configData, targetLang: answers.langs}, {spaces: 2})
       console.log(chalk.green(`🎉 success: ${targetSrc} 生成成功。`));
     }
 
@@ -190,12 +192,15 @@ async function i18nInit() {
   /** 检测环境 */
   await checkEnv('init')
 
+  /** 选择语言 */
   await choicesLangs()
 
+  /** 生成配置文件 */
   await generateConfigureFile()
 
   console.log(chalk.bgGreen(`即将下载必要三方库。${_package}`));
 
+  /** 下载三方包 */
   await installPackage()
 
   console.log(chalk.green('🎉 success: 恭喜！项目初始化完成。\n'));

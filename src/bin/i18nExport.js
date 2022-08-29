@@ -78,6 +78,7 @@ async function i18nextExport(options) {
     ]
   }])
 
+
   const i18n = {}
 
   for (const code of langsData) {
@@ -120,8 +121,6 @@ async function i18nextExport(options) {
   } else {
     i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${moment(new Date().getTime()).format('YYYY-MM-DD_hh-mm-')}${new Date().getTime()}.xlsx`)
   }
-
-  readPackageJson
 
   if (!options || !options.merge) {
     try {

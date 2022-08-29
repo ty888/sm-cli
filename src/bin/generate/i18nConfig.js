@@ -96,7 +96,7 @@ i18n
     parseMissingKeyHandler: (key) => {
       // 缺失词条的处理，如果从远端没有获取到对应词条，可以在此做兜底处理
       const currLng = currentLang
-      const localTrans = LOCAL_TRANS[currLng]?.[key]
+      const localTrans = LOCAL_TRANS[currLng][key]
       return localTrans || '' // 使用本地对应多语言兜底
     }
   })

@@ -130,7 +130,7 @@ async function generateConfigureFile() {
     // 生成类型文件
     if (!fse.pathExistsSync(TtargetSrc)) {
       await cp(TsourceSrc, TtargetSrc);
-      console.log(chalk.green(`🎉 success: ${configTargetSrc} i18核心文件 生成成功。`));
+      console.log(chalk.green(`🎉 success: ${TtargetSrc} i18核心文件 生成成功。`));
     } else {
       console.log(chalk.blue(`🎉 info: ${TtargetSrc} 已存在。`));
     }
@@ -141,6 +141,7 @@ async function generateConfigureFile() {
   }
 }
 
+/** 选择语言 */
 async function choicesLangs () {
   const configData = await readConfig()
   const langsData = configData?.targetLang || ['zh', 'en']
@@ -175,6 +176,7 @@ async function choicesLangs () {
     if (configData) {
       /** 有config 文件 */
       fse.writeJsonSync(targetSrc, {...packageObj,...configData, targetLang: answers.langs}, {spaces: 2})
+      console.log(chalk.green(`🎉 success: ${targetSrc} 生成成功。`));
     } else {
       /** 无config 文件 */
       await cp(sourceSrc, targetSrc);

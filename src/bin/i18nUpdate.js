@@ -7,7 +7,6 @@ import prompts from 'prompts'
 import axios from 'axios';
 import * as url from 'url';
 import {checkEnv} from '../utils/utils.js'
-import {envMap} from './config.js'
 import {parseExcel} from './index.js'
 import {
   langs
@@ -80,31 +79,32 @@ async function fetchData (projectCode, baseURL, langsData) {
 
 async function i18nUpdate() {
   const env = await checkEnv()
-  const langsData = env?.targetLang || langs
-  if(!env?.projectCode) {
+  const langsData = env?.targetLang || langs;
+  const projectCode = env?.projectCode;
+  console.log(env)
+  if(!projectCode) {
     console.log(chalk.red(`❌ 请在配置文件中添加projectCode.`));
     process.exit()
   }
-  const _choice = envMap.map(item => {
-    return {
-      value: [item.value, item.baseURL],
-      title: item.title
-    }
-  })
-  const answer = await prompts([{
-    type: 'select',
-    name: 'value',
-    message: '选择同步环境.',
-    choices: _choice,
-    initial: 0
-  }])
+  // const _choice = envMap.map(item => {
+  //   return {
+  //     value: [item.value, item.baseURL],
+  //     title: item.title
+  //   }
+  // })
+  // const answer = await prompts([{
+  //   type: 'select',
+  //   name: 'value',
+  //   message: '选择同步环境.',
+  //   choices: _choice,
+  //   initial: 0
+  // }])
 
-  const projectCode = env?.projectCode[answer.value[0]]
   if(!projectCode) {
-    console.log(chalk.red(`❌ 请配置${answer.value[0]}环境的projectCode.`));
+    console.log(chalk.red(`❌ 请配置projectCode.`));
     process.exit()
   }
-  const baseURL = answer.value[1]
+  const baseURL = "https://api.sunmi.com/v3/midl/minke"
 
   await fetchData(projectCode, baseURL, langsData)
 }

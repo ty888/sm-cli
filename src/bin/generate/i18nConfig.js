@@ -18,7 +18,7 @@ const initI18nConfigJs = (langs) => {
     return JSON.stringify(_o)
   }
   
-  return `import i18n from 'i18next'
+  return `import i18next from 'i18next'
 import Cookies from 'js-cookie'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
@@ -70,41 +70,49 @@ if(urlLang) {
 // url > cookies > default lang
 export const currentLang =  urlLang || Cookies.get(LNG_KEY) || DEFAULT_LNG
 
+const i18n = i18next.createInstance();
+
 // 多语言配置初始化
-i18n
-  .use(LanguageDetector) // 默认多语言嗅探
-  .use(initReactI18next) // 初始化配置
-  .init({
-    resources: LOCAL_TRANS,
-    defaultNS: 'translation',
-    detection: {
-      caches: false,
-      order: ['cookie', 'localStorage'],
-      lookupCookie: LNG_KEY,
-    },
-    fallbackLng: DEFAULT_LNG,
-    load: 'currentOnly',
-    localePath: DEFAULT_LOCALE_PATH,
-    debug: false,
-    shallowRender: true,
-    interpolation: {
-      escapeValue: false,
-    },
-    react: {
-      useSuspense: false
-    },
-    parseMissingKeyHandler: (key) => {
-      // 缺失词条的处理，如果从远端没有获取到对应词条，可以在此做兜底处理
-      const currLng = currentLang
-      const localTrans = LOCAL_TRANS[currLng][key]
-      return localTrans || '' // 使用本地对应多语言兜底
-    }
-  })
+if (!window.i18n) {
+  i18n
+    .use(LanguageDetector) // 默认多语言嗅探
+    .use(initReactI18next) // 初始化配置
+    .init({
+      resources: LOCAL_TRANS,
+      defaultNS: 'translation',
+      detection: {
+        caches: false,
+        order: ['cookie', 'localStorage'],
+        lookupCookie: LNG_KEY,
+      },
+      fallbackLng: DEFAULT_LNG,
+      load: 'currentOnly',
+      localePath: DEFAULT_LOCALE_PATH,
+      debug: false,
+      shallowRender: true,
+      interpolation: {
+        escapeValue: false,
+      },
+      react: {
+        useSuspense: false,
+      },
+      parseMissingKeyHandler: (key) => {
+        // 缺失词条的处理，如果从远端没有获取到对应词条，可以在此做兜底处理
+        const currLng = currentLang;
+        const localTrans = LOCAL_TRANS[currLng]?.[key];
+        return localTrans || ''; // 使用本地对应多语言兜底
+      },
+    });
+  window.i18n = i18n;
+} else {
+  Object.keys(LOCAL_TRANS).map((item) => {
+    Object.keys(LOCAL_TRANS[item]).map((it) => {
+      window.i18n.addResourceBundle(item, it, LOCAL_TRANS[item][it]);
+    });
+  });
+}
 
-window.i18n = i18n
-
-export default i18n  
-  `
+export default i18n;`
 }
 
 

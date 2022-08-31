@@ -1,7 +1,7 @@
 {
   "name": "@sm/i18n",
-  "version": "1.0.4",
-  "description": "商米大前端多语言工具",
+  "version": "1.1.2",
+  "description": "商米平台多语言工具集",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -9,7 +9,8 @@
     "start": "node index.js"
   },
   "bin": {
-    "sm-i18n": "./index.js"
+    "sm-i18n": "./index.js",
+    "i18n": "./index.js"
   },
   "publishConfig": {
     "access": "public",

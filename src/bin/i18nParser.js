@@ -21,8 +21,8 @@ async function writeI18nJson(path, data) {
 }
 
 // 排序后重新写入本地文件夹
-async function i18nextSort() {
-  for (const code of langs) {
+async function i18nextSort(langsData) {
+  for (const code of langsData) {
     try {
       const pathname = path.join(`./src/i18n/locales/${code}/translation.json`)
       const exists = await fse.pathExists(pathname)
@@ -38,7 +38,8 @@ async function i18nextSort() {
 }
 
 async function i18nextParser() {
-  await checkEnv()
+  const env = await checkEnv()
+  const langsData = env?.targetLang || langs
 
   if (!shell.which('i18next')) {
     console.error('❗️❗️❗️首先需要全局安装 i18next-parser 才能执行这个命令')
@@ -47,7 +48,7 @@ async function i18nextParser() {
       .prompt([{
         type: 'list',
         name: 'package',
-        message: 'What package management tool do you like?',
+        message: '选择一个你喜欢的包管理工具。',
         choices: ['yarn', 'npm'],
       }, ])
       .then((answers) => {
@@ -72,7 +73,7 @@ async function i18nextParser() {
     const args = []
     args.push('--config', `${path.resolve(__dirname, 'i18next-parser.config.js')}`)
     const i18next = spawn('i18next', args, { stdio: 'inherit' })
-    i18next.on('close', () => i18nextSort())
+    i18next.on('close', () => i18nextSort(langsData))
   }
 }
 

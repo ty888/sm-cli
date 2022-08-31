@@ -17,7 +17,6 @@ import {
   STRING_NOT_TRANSLATED,
   I18N
 } from './config.js';
-import {readPackageJson} from '../utils/readFile.js'
 import { checkEnv } from '../utils/utils.js'
 
 const {
@@ -29,7 +28,7 @@ function returnSheetData(i18n, i18nCode, langsData) {
   const _data = {}
 
   langsData.forEach(code => {
-    _data[I18N[code].name] = i18n[code][i18nCode]
+    _data[I18N[code].name] = i18n?.[code]?.[i18nCode]
   })
   return _data
 }
@@ -63,8 +62,10 @@ function exportExcel(sheetData, i18nExportFile) {
   })
 }
 
-// 导出入口逻辑入口
+// 导出逻辑入口
 async function i18nextExport(options) {
+  // await i18nextParser()
+
   const env = await checkEnv()
   const langsData = env?.targetLang || langs
 
@@ -115,12 +116,8 @@ async function i18nextExport(options) {
   }
 
   let i18nExportFile = '';
-  const data = await readPackageJson()
-  if(data) {
-    i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${data?.name}_${moment(new Date().getTime()).format('YYYY-MM-DD_hh-mm')}.xlsx`)
-  } else {
-    i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${moment(new Date().getTime()).format('YYYY-MM-DD_hh-mm-')}${new Date().getTime()}.xlsx`)
-  }
+
+  i18nExportFile = path.resolve(os.homedir(), 'Downloads', `${moment(new Date().getTime()).format('YYYY-MM-DD_hh-mm-')}${new Date().getTime()}.xlsx`)
 
   if (!options || !options.merge) {
     try {

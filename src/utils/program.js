@@ -15,21 +15,19 @@ const initProgram = async () => {
   program
     .name('sm-i18n')
     .version(version, '-v, --version')
-    .description('商米大前端多语言工具集')
+    .description('商米平台多语言工具集')
     .option('-c, --config', '初始化项目配置')
     .option('-e, --export', '导出')
     .option('-p, --parser', '格式化')
     .option('-i, --import', '导入')
     .option('-u, --update', '拉取线上最新')
     .option('-s, --scan', '文案扫描(开发阶段)')
-    .option('-t, --test', '测试')
     .action((conf) => {
       conf?.config && i18nInit();
       conf?.import && i18nImport();
       conf?.parser && i18nextParser();
       conf?.export && i18nextExport();
       conf?.scan && i18nPick();
-      conf?.test && i18nTest();
       conf?.update && i18nUpdate();
     });
 
@@ -46,6 +44,12 @@ const initProgram = async () => {
   })
 
   program
+  .command('parser')
+  .action(function () {
+    i18nextParser()
+  })
+
+  program
   .command('export')
   .action(function () {
     i18nextExport()
@@ -55,6 +59,12 @@ const initProgram = async () => {
   .command('update')
   .action(function () {
     i18nUpdate()
+  })
+
+  program
+  .command('test')
+  .action(function () {
+    i18nTest()
   })
 
   program.parse(process.argv);

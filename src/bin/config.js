@@ -6,20 +6,15 @@ export const I18N = {
     standardCode: 'zh-CN',
     name: '简体中文',
   },
-  tw: {
-    code: 'tw',
-    standardCode: 'zh-TW',
-    name: '繁体中文',
-  },
   en: {
     code: 'en',
     standardCode: 'en-US',
     name: '英文',
   },
-  fr: {
-    code: 'fr',
-    standardCode: 'fr',
-    name: '法语',
+  tw: {
+    code: 'tw',
+    standardCode: 'zh-TW',
+    name: '繁体中文',
   },
   ja: {
     code: 'ja',
@@ -31,6 +26,11 @@ export const I18N = {
     standardCode: 'es',
     name: '西班牙语'
   },
+  fr: {
+    code: 'fr',
+    standardCode: 'fr',
+    name: '法语',
+  }
 }
 
 export const langs = Object.keys(I18N)

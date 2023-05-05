@@ -81,7 +81,6 @@ async function i18nUpdate() {
   const env = await checkEnv()
   const langsData = env?.targetLang || langs;
   const projectCode = env?.projectCode;
-  console.log(env)
   if(!projectCode) {
     console.log(chalk.red(`❌ 请在配置文件中添加projectCode.`));
     process.exit()

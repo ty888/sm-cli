@@ -1,3 +1,8 @@
 # sunmi-cli
 
-### [文档](https://thoughts.teambition.com/workspaces/62426b6cdfb2bb00412d3e27/docs/6294305fce567600019c2f17)
+```bash
+// 开联呗
+npm i @sm/i18n -g 
+```
+
+### [接入文档](https://thoughts.teambition.com/workspaces/6200c9561a4fa5004190c7f4/docs/62eb65bcce56760001344853#f1d16330-1464-11ed-9bca-a59514592c25-141236)

@@ -1,25 +1,56 @@
 {
-  "name": "sm-cli",
-  "version": "1.0.0",
-  "description": "Help you develop better。",
+  "name": "@sm/i18n",
+  "version": "1.1.4",
+  "description": "商米平台多语言工具集",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
+  "bin": {
+    "sm-i18n": "./index.js",
+    "i18n": "./index.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npm.sunmi.com/"
+  },
+  "keywords": [
+    "cli",
+    "sunmi",
+    "i18n"
+  ],
   "author": "ty",
   "license": "ISC",
-  "devDependencies": {
-    "open": "^8.4.0"
-  },
   "dependencies": {
+    "@babel/core": "^7.18.10",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.18.10",
+    "@babel/plugin-proposal-object-rest-spread": "^7.18.9",
+    "@babel/plugin-proposal-private-methods": "^7.18.6",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-syntax-typescript": "^7.18.6",
+    "@babel/plugin-transform-typescript": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
     "axios": "^0.27.2",
     "chalk": "^5.0.1",
+    "child_process": "^1.0.2",
     "commander": "^9.3.0",
-    "env-editor": "^1.1.0",
-    "execa": "5.1.1",
-    "line-column-path": "^3.0.0",
-    "prompts": "^2.4.2"
+    "core-js": "^3.24.1",
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
+    "inquirer": "^9.0.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "ora": "^6.1.2",
+    "os": "^0.1.2",
+    "prompts": "^2.4.2",
+    "rimraf": "^3.0.2",
+    "shelljs": "^0.8.5",
+    "sort-keys": "^5.0.0",
+    "xlsx": "^0.18.5"
   }
 }

@@ -3,44 +3,69 @@
  * @description: 设置程序参数命令
  */
 import { Command } from 'commander';
-import { runIcon } from '../app/addIcon/index.js'
-import { openEditor } from './index.js'
+import { i18nextParser, i18nextExport, i18nImport, i18nInit, i18nPick, i18nTest, i18nUpdate} from '../bin/index.js';
+import {readCliPackageJson} from './readFile.js'
 
-const initProgram = () => {
+const initProgram = async () => {
   const program = new Command();
+  const packageData = await readCliPackageJson()
+  const version = packageData?.version || '0.0.1'
 
   /** global */
   program
-    .name('sum-cli')
-    .description('商米大前端工具集。')
-    .version('0.8.0')
-
-
-  /** icon */
-  program.command('icon')
-    .description('商米大前端工具集 - 添加icon')
-    // .option('-i, --init', '初始化icon 模版路径')
-    .option('-t, --type <type>', '运行类型。web | android', 'web')
-    .option('-p, --path <path>', '配置iconpath', './')
-    .option('-s, --suffix <suffix>', '生成模版的后缀。tsx | jsx', 'tsx')
+    .name('sm-i18n')
+    .version(version, '-v, --version')
+    .description('商米平台多语言工具集')
+    .option('-c, --config', '初始化项目配置')
+    .option('-e, --export', '导出')
+    .option('-p, --parser', '格式化')
+    .option('-i, --import', '导入')
+    .option('-u, --update', '拉取线上最新')
+    .option('-s, --scan', '文案扫描(开发阶段)')
     .action((conf) => {
-      runIcon(conf)
+      conf?.config && i18nInit();
+      conf?.import && i18nImport();
+      conf?.parser && i18nextParser();
+      conf?.export && i18nextExport();
+      conf?.scan && i18nPick();
+      conf?.update && i18nUpdate();
     });
 
-  /** config */
-  program.command('conf')
-  .description('商米大前端工具集 - 配置全局参数')
-  .option('-p, --path <path>', '配置iconpath')
-  .action(() => {
-    /**
-     * 打开配置文件
-     * 
-     * 默认使用vscode打开
-     * 
-     * 其他编辑器可参考 (https://github.com/sindresorhus/env-editor)
-     */
-    openEditor(['./src/config/index.js'], { editor: 'vscode' });
-  });
+  program
+    .command('init')
+    .action(function () {
+      i18nInit()
+    })
+  
+  program
+  .command('import')
+  .action(function () {
+    i18nImport()
+  })
+
+  program
+  .command('parser')
+  .action(function () {
+    i18nextParser()
+  })
+
+  program
+  .command('export')
+  .action(function () {
+    i18nextExport()
+  })
+
+  program
+  .command('update')
+  .action(function () {
+    i18nUpdate()
+  })
+
+  program
+  .command('test')
+  .action(function () {
+    i18nTest()
+  })
 
   program.parse(process.argv);
 }

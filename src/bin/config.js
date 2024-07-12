@@ -30,6 +30,21 @@ export const I18N = {
     code: 'fr',
     standardCode: 'fr',
     name: '法语',
+  },
+  km: {
+    code: 'km',
+    standardCode: 'km',
+    name: '柬埔寨语',
+  },
+  id: {
+    code: 'id',
+    standardCode: 'id',
+    name: '印度尼西亚语',
+  },
+  th: {
+    code: 'th',
+    standardCode: 'th',
+    name: '泰语',
   }
 }
 
